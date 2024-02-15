@@ -6,6 +6,8 @@ import z from "zod";
 export const appRouter = router({
   authCallBack: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
+
+    
     const user = getUser();
     if (!user.id || !user.email) throw new TRPCError({ code: "UNAUTHORIZED" });
     // checks if user is already present in database
@@ -47,7 +49,14 @@ export const appRouter = router({
           userId,
         },
       });
+      if (!file) throw new TRPCError({ code: "NOT_FOUND" });
 
+      await db.file.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      return file;
     }),
 });
 export type AppRouter = typeof appRouter;
