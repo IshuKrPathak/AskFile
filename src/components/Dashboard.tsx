@@ -2,7 +2,14 @@
 import { trpc } from "@/app/_trpc/client";
 import UploadButton from "./UploadButton";
 import Skeleton from "react-loading-skeleton";
-import { GhostIcon, MessageSquare, Plus, TrashIcon } from "lucide-react";
+import {
+  GhostIcon,
+  Loader,
+  MessageSquare,
+  Plus,
+  Trash,
+  TrashIcon,
+} from "lucide-react";
 import { date } from "zod";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -22,11 +29,13 @@ const Dashboard = () => {
     onSuccess: () => {
       utils.getUserFiles.invalidate();
     },
-    onMutate: ({ id })=>{
-      setCurrentlyDeletingFile(id)
+
+    onMutate: ({ id }) => {
+      setCurrentlyDeletingFile(id);
     },
+
     onSettled() {
-      setCurrentlyDeletingFile(null)
+      setCurrentlyDeletingFile(null);
     },
   });
   return (
@@ -82,7 +91,11 @@ const Dashboard = () => {
                     className="w-full"
                     variant="destructive"
                   >
-                    <TrashIcon className="h-4 w-4" />
+                   {curentDeletingFile === files.id ? (
+                      <Loader className='h-4 w-4 animate-spin' />
+                    ) : (
+                      <Trash className='h-4 w-4' />
+                    )}
                   </Button>
                 </div>
               </li>
