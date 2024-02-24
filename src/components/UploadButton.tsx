@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 const UploadDropZone = () => {
   const router = useRouter();
 
-  const [isUploading, setIsUploading] = useState<boolean>(true);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   const { startUpload } = useUploadThing("pdfUploader");
@@ -25,7 +25,7 @@ const UploadDropZone = () => {
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
-      router.push(`/dashboard/${file.id}`);
+      router.push(`/dashboard/${file}`);
     },
     retry: true,
     retryDelay: 500,
@@ -33,6 +33,7 @@ const UploadDropZone = () => {
 
   const startSimulatedProgress = () => {
     setUploadProgress(0);
+
     const interval = setInterval(() => {
       setUploadProgress((preProgress) => {
         if (preProgress >= 95) {
@@ -53,7 +54,7 @@ const UploadDropZone = () => {
         const progressInterval = startSimulatedProgress();
 
         // handle file uploading
-        // await new Promise((resolve) => setTimeout(resolve, 10000));
+        
 
         const res = await startUpload(acceptedFiles);
 

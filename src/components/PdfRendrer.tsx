@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { Document, Page, pdfjs } from "react-pdf";
 //pdf css
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -19,7 +19,7 @@ const PdfRendrer = ({ url }: PdfRendrerProps) => {
       <div className=" flex-1 w-full max-h-screen ">
         <div>
           <Document file={url} className="max-h-full">
-            <Page pageNumber={1} />
+            <Page pageNumber={2} />
           </Document>
         </div>
       </div>
