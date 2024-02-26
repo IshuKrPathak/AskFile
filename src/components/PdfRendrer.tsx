@@ -18,8 +18,8 @@ const PdfRendrer = ({ url }: PdfRendrerProps) => {
       </div>
       <div className=" flex-1 w-full max-h-screen ">
         <div>
-          <Document file={url} className="max-h-full">
-            <Page pageNumber={2} />
+          <Document  file={url} className="max-h-full">
+            <Page pageNumber={1} />
           </Document>
         </div>
       </div>

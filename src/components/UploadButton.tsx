@@ -25,7 +25,7 @@ const UploadDropZone = () => {
 
   const { mutate: startPolling } = trpc.getFile.useMutation({
     onSuccess: (file) => {
-      router.push(`/dashboard/${file}`);
+      router.push(`/dashboard/${file.id}`);
     },
     retry: true,
     retryDelay: 500,
@@ -128,7 +128,7 @@ const UploadDropZone = () => {
                   ) : null}
                 </div>
               ) : null}
-              <input type="file" id="dropzone-file" className=" hidden" />
+              <input {...getInputProps} type="file" id="dropzone-file" className=" hidden" />
             </label>
           </div>
         </div>
