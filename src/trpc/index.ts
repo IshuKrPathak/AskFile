@@ -3,6 +3,7 @@ import { privateProcedure, publicProcedure, router } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import z from "zod";
+import { Input } from "postcss";
 export const appRouter = router({
   authCallBack: publicProcedure.query(async () => {
     const { getUser } = getKindeServerSession();
@@ -38,6 +39,24 @@ export const appRouter = router({
     });
   }),
 
+  // uplaoding status
+  getFileUploadStatus: privateProcedure
+    .input(z.object({ fileId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const file = await db.file.findFirst({
+        where: {
+          id: input.fileId,
+          userId: ctx.userId,
+        },
+      });
+
+      // not file in db
+      if (!file) return { status: "PENDING" as const };
+      return {
+        status: file.uploadStatus,
+      };
+    }),
+
   getFile: privateProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -50,7 +69,7 @@ export const appRouter = router({
         },
       });
       if (!file) throw new TRPCError({ code: "NOT_FOUND" });
-      return file
+      return file;
     }),
 
   deleteFile: privateProcedure

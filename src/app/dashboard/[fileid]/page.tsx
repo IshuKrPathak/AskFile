@@ -1,4 +1,4 @@
-import ChatWrapper from "@/components/ChatWrapper";
+import ChatWrapper from "@/components/Chats/ChatWrapper";
 import PdfRendrer from "@/components/PdfRendrer";
 
 import { db } from "@/db";
