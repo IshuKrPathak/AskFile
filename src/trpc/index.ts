@@ -57,6 +57,25 @@ export const appRouter = router({
       };
     }),
 
+//fetching message from db
+getFileMessages :privateProcedure.input(
+  z.object({
+    limit:z.number().min(1).max(100).nullish(),
+  cursor:z.string().nullish(),
+  fileId:z.string()
+  })
+).query(({input,ctx})=>{
+  const {userId} = ctx
+  const {fileId,cursor} = input
+  const limit = input.limit ??
+
+
+})
+
+
+    
+
+//fetching file from db
   getFile: privateProcedure
     .input(z.object({ key: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -71,6 +90,8 @@ export const appRouter = router({
       if (!file) throw new TRPCError({ code: "NOT_FOUND" });
       return file;
     }),
+
+    //deleting file from db
 
   deleteFile: privateProcedure
     .input(z.object({ id: z.string() }))

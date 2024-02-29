@@ -9,7 +9,7 @@ type StreamResponse = {
   isLoading: boolean;
 };
 
-export const ChartContext = createContext<StreamResponse>({
+export const ChatContext = createContext<StreamResponse>({
   addMessage: () => {},
   message: "",
   handleInputChange: () => {},
@@ -21,7 +21,7 @@ interface Props {
   children: ReactNode;
 }
 
-export const ChartContextProvider = ({ fileId, children }: Props) => {
+export const ChatContextProvider = ({ fileId, children }: Props) => {
   // State for messages and loading status
   const [message, setMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,7 +49,7 @@ export const ChartContextProvider = ({ fileId, children }: Props) => {
 
   const addMessage = () => sendMessage({ message });
   return (
-    <ChartContext.Provider
+    <ChatContext.Provider
       value={{
         addMessage,
         message,
@@ -58,6 +58,6 @@ export const ChartContextProvider = ({ fileId, children }: Props) => {
       }}
     >
       {children}
-    </ChartContext.Provider>
+    </ChatContext.Provider>
   );
 };
