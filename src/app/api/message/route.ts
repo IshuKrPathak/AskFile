@@ -1,6 +1,9 @@
 import { db } from "@/db";
+import { getPineconeClient } from "@/lib/pinecone";
 import { SendMessageValidator } from "@/lib/validators/SendMessageValidator";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { PineconeStore } from "langchain/vectorstores/pinecone";
 import { NextRequest } from "next/server";
 
 export const POST = async (req: NextRequest) => {
@@ -33,7 +36,40 @@ export const POST = async (req: NextRequest) => {
       fileId,
     },
   });
+
+  //answering question of the pdf
+  // step-1 vectorise the message
+  const embeddings = new OpenAIEmbeddings({
+    openAIApiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const pinecone = await getPineconeClient();
+  const pineconeIndex = pinecone.Index("askfile");
+
+  const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+    pineconeIndex,
+    namespace: file.id,
+  });
+
+  const results = await vectorStore.similaritySearch(message, 4); //here 4 is  the amount of results
+
+  //previous message for exchanging  information between messages
+
+  const prevMessages = await db.message.findMany({
+    where: {
+      fileId,
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+    take: 6, //no of last messages
+  });
+  const formattedMessages = prevMessages.map((msg) => ({
+    role: msg.isUserMessage ? ("user" as const) : ("assistant" as const),
+    content: msg.text,
+  }));
+
+  //response from llm (large lanhguage models) models
+
+  const response = await openai
 };
-
-
-//answering question of the pdf
