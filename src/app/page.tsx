@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
+import preview from "../../public/preview.png"
 
 export default function Home() {
   return (
@@ -12,7 +13,7 @@ export default function Home() {
           <p className=" text-sm font-semibold text-gray-700"> Ask Files </p>
         </div>
         <h1 className=" max-w-4xl text-5xl font-bold ,d:text-6xl lg:text-7xl ">
-          Chat with your <span className=" text-red-700">documnets 📚</span> in
+          Chat with your <span className=" text-orange-600">documnets 📚</span> in
           second ⏱️.
         </h1>
         <p className=" mt-5 max-w-prose text-zinc-700 sm:text-lg">
@@ -54,7 +55,7 @@ export default function Home() {
               <div className="mt-16 flow-root sm:mt-24">
                 <div className="-m-2 rounded-xl bg-red-200 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
-                    src="/dashboard-preview.jpg"
+                    src={preview}
                     alt="product preview"
                     width={1364}
                     height={866}
@@ -77,7 +78,7 @@ export default function Home() {
             </h2>
             <p className="mt-4 text-lg text-gray-600">
               Chatting to your pdf files has been easier with the help of{" "}
-              <span className="  text-ellipsis text-red-700 text-2xl font-bold">
+              <span className="  text-ellipsis text-orange-600 text-2xl font-bold">
                 AskFile ✅
               </span>
             </p>
@@ -89,8 +90,8 @@ export default function Home() {
         <ol className=" my-8 space-y-4 pt-8 md:flex md:space-x-12 md:space-y-0 ">
           <li className=" md:flex-1">
             <div className=" flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2  md:pb-0 md:pl-0 md:pt-4">
-              <span className=" text-sm font-medium text-red-700">Step-1</span>
-              <span className=" text-xl font-semibold text-red-700">
+              <span className=" text-sm font-medium text-orange-600">Step-1</span>
+              <span className=" text-xl font-semibold text-orange-600">
                 Sign-up for an account.
               </span>
               <span className=" mt-2 text-zinc-700">
@@ -104,8 +105,8 @@ export default function Home() {
           </li>
           <li className=" md:flex-1">
             <div className=" flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2  md:pb-0 md:pl-0 md:pt-4">
-              <span className=" text-sm font-medium text-red-700">Step-2</span>
-              <span className=" text-xl font-semibold text-red-700">
+              <span className=" text-sm font-medium text-orange-600">Step-2</span>
+              <span className=" text-xl font-semibold text-orange-600">
                 Upload your PDF files.
               </span>
               <span className=" mt-2 text-zinc-700">
@@ -116,8 +117,8 @@ export default function Home() {
           </li>
           <li className=" md:flex-1">
             <div className=" flex flex-col space-y-2 border-l-4 border-zinc-300 py-2 pl-4 md:border-l-0 md:border-t-2  md:pb-0 md:pl-0 md:pt-4">
-              <span className=" text-sm font-medium text-red-700">Step-3</span>
-              <span className=" text-xl font-semibold text-red-700">
+              <span className=" text-sm font-medium text-orange-600">Step-3</span>
+              <span className=" text-xl font-semibold text-orange-600">
                 Start asking Questions.
               </span>
               <span className=" mt-2 text-zinc-700">
@@ -132,10 +133,10 @@ export default function Home() {
               <div className="mt-16 flow-root sm:mt-24">
                 <div className="-m-2 rounded-xl bg-red-200 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
                   <Image
-                    src="/dashboard-preview.jpg"
+                    src={preview}
                     alt="file uploaded preview"
-                    width={1419}
-                    height={732}
+                    width={2419}
+                    height={1732}
                     quality={100}
                     className="rounded-md bg-white p-2 sm:p-8 md:p-20 shadow-2xl ring-1 ring-gray-900/10"
                   />
