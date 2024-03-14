@@ -1,18 +1,17 @@
 "use client"
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation"; // Removed useSearchParams import
 import { trpc } from "../_trpc/client";
 import { Loader2 } from "lucide-react";
 
 const Page = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const origin = searchParams.get("origin");
+  const origin = ""; // Initialize origin variable
 
   trpc.authCallBack.useQuery(undefined, {
     onSuccess: ({ success }) => {
       if (success) {
         //user is synced to database
-        router.push(origin ? "/${origin}" : "/dashboard");
+        router.push(origin ? `/${origin}` : "/dashboard"); // Updated router.push syntax
       }
     },
     onError: (err) => {
@@ -24,10 +23,10 @@ const Page = () => {
     retryDelay: 500,
   });
   return (
-    <div className=" w-full mt-24 flex justify-center">
-      <div className=" flex flex-col items-center gap-2">
-        <Loader2 className=" h-8 w-8 animate-spin text-zinc-800" />
-        <h2 className=" font-semibold text-xl "> setting up your account</h2>
+    <div className="w-full mt-24 flex justify-center">
+      <div className="flex flex-col items-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-800" />
+        <h2 className="font-semibold text-xl"> setting up your account</h2>
         <p> You will be redirected automatically</p>
       </div>
     </div>
