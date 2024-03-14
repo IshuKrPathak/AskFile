@@ -109,7 +109,7 @@ const Page = () => {
                     </h3>
                     <p className=" text-gray-500">{tagline}</p>
                     <p className=" my-5 font-display text-6xl font-semibold">
-                      ${price}
+                    ₹{price}
                     </p>
                     <p className=" text-gray-500">per month</p>
                   </div>
@@ -169,16 +169,16 @@ const Page = () => {
                   <div className=" border-t border-gray-200" />
                   <div className=" p-5">
                     {plan === "Free" ? (
-                       <Link
-                       href={user ? '/dashboard':"sign-in" }
-                       className={buttonVariants({
-                         className: "w-full",
-                         variant:"secondary"
-                       })}
-                     >
-                       {user ?"Upgrade Now":"Sign up" }
-                       <ArrowRight className=" h-6 w-6 ml-1.5"/>
-                     </Link>
+                      <Link
+                        href={user ? "/dashboard" : "sign-in"}
+                        className={buttonVariants({
+                          className: "w-full",
+                          variant: "secondary",
+                        })}
+                      >
+                        {user ? "Upgrade Now" : "Sign up"}
+                        <ArrowRight className=" h-6 w-6 ml-1.5" />
+                      </Link>
                     ) : user ? (
                       <UpgradeButton />
                     ) : (
@@ -188,8 +188,8 @@ const Page = () => {
                           className: "w-full",
                         })}
                       >
-                        {user ?"Upgrade Now":"Sign up" }
-                        <ArrowRight className=" h-6 w-6 ml-1.5"/>
+                        {user ? "Upgrade Now" : "Sign up"}
+                        <ArrowRight className=" h-6 w-6 ml-1.5" />
                       </Link>
                     )}
                   </div>
