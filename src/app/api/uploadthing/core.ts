@@ -5,67 +5,120 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { getPineconeClient } from "@/lib/pinecone";
 import { PineconeStore } from "langchain/vectorstores/pinecone";
+import { getUserSubscriptionPlan } from "@/lib/stripe";
+import { PLANS } from "@/config/stripe";
 
 const f = createUploadthing();
 
-export const ourFileRouter = {
-  pdfUploader: f({ pdf: { maxFileSize: "4MB" } })
-    .middleware(async ({ req }) => {
-      const { getUser } = getKindeServerSession();
-      const user = getUser();
-      if (!user || !user.id) throw new Error("Unauthorized");
+const middleware = async () => {
+  const { getUser } = getKindeServerSession();
+  const user = getUser();
 
-      return { userId: user.id };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      const createdFile = await db.file.create({
+  if (!user || !user.id) throw new Error("Unauthorized");
+
+  const subscriptionPlan = await getUserSubscriptionPlan();
+
+  return { subscriptionPlan, userId: user.id };
+};
+
+const onUploadComplete = async ({
+  metadata,
+  file,
+}: {
+  metadata: Awaited<ReturnType<typeof middleware>>;
+  file: {
+    key: string;
+    name: string;
+    url: string;
+  };
+}) => {
+  // file already exists
+  const isFileExist = await db.file.findFirst({
+    where: {
+      key: file.key,
+    },
+  });
+
+  if (isFileExist) return;
+
+  const createdFile = await db.file.create({
+    data: {
+      key: file.key,
+      name: file.name,
+      userId: metadata.userId,
+      url: `https://utfs.io/f/${file.key}`,
+      uploadStatus: "PROCESSING",
+    },
+  });
+
+  //answering the question
+  try {
+    const response = await fetch(`https://utfs.io/f/${file.key}`);
+    const blob = await response.blob();
+
+    const loader = new PDFLoader(blob);
+
+    const pageLevelDocs = await loader.load();
+    const pagesAmt = pageLevelDocs.length;
+
+    //dont make free users to upload as many pages of pdf
+
+    const { subscriptionPlan } = metadata;
+    const { isSubscribed } = subscriptionPlan;
+
+    const isProExcedded =
+      pagesAmt > PLANS.find((plan) => plan.name === "Pro")!.pagerPerPdf;
+    const isFreeExcedded =
+      pagesAmt > PLANS.find((plan) => plan.name === "Free")!.pagerPerPdf;
+
+    if ((isSubscribed && isProExcedded) || (!isSubscribed && isFreeExcedded)) {
+      await db.file.update({
         data: {
-          key: file.key,
-          name: file.name,
-          userId: metadata.userId,
-          url: `https://utfs.io/f/${file.key}`,
-          uploadStatus: "PROCESSING",
+          uploadStatus: "FAILED",
+        },
+        where: {
+          id: createdFile.id,
         },
       });
+    }
 
-      //answering the question
-      try {
-        const response = await fetch(`https://utfs.io/f/${file.key}`);
-        const blob = await response.blob();
+    //vectorize and index entire document
+    const pinecone = await getPineconeClient();
 
-        const loader = new PDFLoader(blob);
+    const pineconeIndex = pinecone.Index("askfile");
 
-        const pageLevelDocs = await loader.load();
-        const pagesAmt = pageLevelDocs.length;
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.OPENAI_API_KEY,
+    });
 
-        //vectorize and index entire document
-        const pinecone = await getPineconeClient();
+    await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+      pineconeIndex,
+      namespace: createdFile.id,
+    });
+    await db.file.update({
+      data: {
+        uploadStatus: "SUCCESS",
+      },
+      where: { id: createdFile.id },
+    });
+  } catch (err) {
+    await db.file.update({
+      data: {
+        uploadStatus: "FAILED",
+      },
+      where: { id: createdFile.id },
+    });
+  }
+};
 
-        const pineconeIndex = pinecone.Index("askfile");
+export const ourFileRouter = {
+  freePlanUploader: f({ pdf: { maxFileSize: "4MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 
-        const embeddings = new OpenAIEmbeddings({
-          openAIApiKey: process.env.OPENAI_API_KEY,
-        });
-
-        await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
-          pineconeIndex,
-          namespace: createdFile.id,
-        });
-        await db.file.update({
-          data: {
-            uploadStatus: "SUCCESS",
-          },
-          where: { id: createdFile.id },
-        });
-      } catch (err) {
-        await db.file.update({
-          data: {
-            uploadStatus: "FAILED",
-          },
-          where: { id: createdFile.id },
-        });
-      }
-    }),
+  proPlanUploader: f({ pdf: { maxFileSize: "16MB" } })
+    .middleware(middleware)
+    .onUploadComplete(onUploadComplete),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
