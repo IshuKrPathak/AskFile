@@ -29,7 +29,7 @@ AskFile is a Software as a service that is used by students and other profession
 
 ### Tech Stack <a name="tech-stack"></a>
 
-The Tech stack for this project include Next.JS, Tailwind CSS, Shadcn-UI,  Kinde Auth, Pinecoine, UploadThing, TRPC, Tailwind Merge, React-PDF, Stripe, Zod, Prisma Open-AI.
+The Tech stack for this project include Next.JS, Tailwind CSS, Shadcn-UI,  Kinde Auth, Pinecoine, UploadThing, TRPC, Tailwind Merge, React-PDF, Stripe, Zod, Prisma Open-AI, Langchain .
 
 
 ### Key Features <a name="key-features"></a>
@@ -40,6 +40,7 @@ The Tech stack for this project include Next.JS, Tailwind CSS, Shadcn-UI,  Kinde
 5. Short and unique content creation of the asked questions.
 6. Payment Gateway Integration using Stripe.
 7. Proper SAAS like UI and working with validations of number of uses and content upload capacity.
+                     and many more. Have a look👇 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
